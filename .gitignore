@@ -1,0 +1,84 @@
+# ========================
+# Orchestra — Root .gitignore
+# ========================
+
+# Environment files — NEVER commit real secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env/
+
+# uv
+.uv/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+frontend/.parcel-cache/
+
+# Alembic — don't commit auto-generated migration artifacts
+# (keep the versions/ files themselves — they are source code)
+
+# Docker
+.docker/
+
+# Misc
+*.bak
+*.tmp

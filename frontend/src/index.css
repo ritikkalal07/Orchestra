@@ -1,0 +1,340 @@
+/* ============================================================
+   Orchestra Design System
+   Concert-hall-at-night palette from DESIGN.md
+   ============================================================ */
+
+/* --- Reset & Base --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* --- Design Tokens --- */
+:root {
+  /* Colors — six named values, concert-hall-at-night */
+  --ink:    #14100E;   /* primary background — warm near-black */
+  --wine:   #3A1620;   /* panel/card backgrounds, deep velvet */
+  --ivory:  #EDE6D6;   /* primary text — sheet-music paper */
+  --brass:  #C9A24B;   /* the one accent — active state, primary actions */
+  --sage:   #6FA287;   /* success / completed */
+  --brick:  #B4432E;   /* failure / dead-letter */
+
+  /* Semantic aliases */
+  --color-bg:         var(--ink);
+  --color-panel:      var(--wine);
+  --color-text:       var(--ivory);
+  --color-accent:     var(--brass);
+  --color-success:    var(--sage);
+  --color-error:      var(--brick);
+  --color-border:     rgba(237, 230, 214, 0.10);
+  --color-muted:      rgba(237, 230, 214, 0.45);
+  --color-staff-line: rgba(237, 230, 214, 0.08);
+
+  /* Typography */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.4);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.5);
+  --shadow-lg:  0 8px 32px rgba(0,0,0,0.6);
+  --shadow-brass: 0 0 24px rgba(201,162,75,0.25);
+  --shadow-sage:  0 0 16px rgba(111,162,135,0.20);
+  --shadow-brick: 0 0 16px rgba(180,67,46,0.20);
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow:   400ms ease;
+
+  /* Layout */
+  --sidebar-width: 280px;
+  --detail-width:  320px;
+  --header-height: 60px;
+}
+
+/* --- Base Styles --- */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--ink);
+  color: var(--ivory);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Typography --- */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ivory);
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.125rem; }
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* --- Scrollbars --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(237, 230, 214, 0.15);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(237, 230, 214, 0.25);
+}
+
+/* --- Buttons --- */
+button {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--brass);
+  color: var(--ink);
+  font-weight: 600;
+}
+.btn-primary:hover {
+  background: #d4ad58;
+  box-shadow: var(--shadow-brass);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--ivory);
+  border: 1px solid var(--color-border);
+}
+.btn-ghost:hover {
+  background: rgba(237, 230, 214, 0.06);
+  border-color: rgba(237, 230, 214, 0.2);
+}
+
+.btn-danger {
+  background: rgba(180, 67, 46, 0.15);
+  color: var(--brick);
+  border: 1px solid rgba(180, 67, 46, 0.3);
+}
+.btn-danger:hover {
+  background: rgba(180, 67, 46, 0.25);
+}
+
+.btn-sm {
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.8125rem;
+}
+
+/* --- Cards / Panels --- */
+.card {
+  background: var(--wine);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+.panel {
+  background: var(--wine);
+  border-right: 1px solid var(--color-border);
+}
+
+/* --- Status badges --- */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.status-pending   { background: rgba(237,230,214,0.08); color: var(--ivory); }
+.status-claimed   { background: rgba(201,162,75,0.15);  color: var(--brass); border: 1px solid rgba(201,162,75,0.3); }
+.status-running   { background: rgba(201,162,75,0.15);  color: var(--brass); border: 1px solid rgba(201,162,75,0.3); animation: pulse-brass 2s infinite; }
+.status-succeeded { background: rgba(111,162,135,0.15); color: var(--sage);  border: 1px solid rgba(111,162,135,0.3); }
+.status-failed    { background: rgba(180,67,46,0.15);   color: var(--brick); border: 1px solid rgba(180,67,46,0.3); }
+.status-dead_letter { background: rgba(180,67,46,0.25); color: var(--brick); border: 1px solid rgba(180,67,46,0.5); }
+.status-skipped   { background: rgba(237,230,214,0.05); color: var(--color-muted); }
+
+@keyframes pulse-brass {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201,162,75,0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(201,162,75,0); }
+}
+
+/* --- Animated dot --- */
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-running { background: var(--brass); animation: blink 1.2s ease-in-out infinite; }
+.dot-success { background: var(--sage); }
+.dot-error   { background: var(--brick); }
+.dot-pending { background: var(--color-muted); }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* --- Loading spinner --- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(201,162,75,0.2);
+  border-top-color: var(--brass);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Divider --- */
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-4) 0;
+}
+
+/* --- Mono text --- */
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+/* --- Layout utilities --- */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.flex-1 { flex: 1; }
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+
+/* --- React Flow overrides --- */
+.react-flow {
+  background: var(--ink) !important;
+}
+.react-flow__background {
+  background: var(--ink) !important;
+}
+.react-flow__edge-path {
+  stroke: rgba(237,230,214,0.2) !important;
+  stroke-width: 2px !important;
+}
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--brass) !important;
+}
+.react-flow__controls {
+  background: var(--wine) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+}
+.react-flow__controls-button {
+  background: transparent !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  color: var(--ivory) !important;
+  fill: var(--ivory) !important;
+}
+.react-flow__controls-button:hover {
+  background: rgba(237,230,214,0.06) !important;
+}
+.react-flow__minimap {
+  background: var(--wine) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-md) !important;
+}
+
+/* --- prefers-reduced-motion: disable animations --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
