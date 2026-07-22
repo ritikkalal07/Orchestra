@@ -72,6 +72,23 @@ app.add_middleware(
 )
 
 
+from fastapi.responses import JSONResponse
+import traceback
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    tb = traceback.format_exc()
+    logger.error("Unhandled exception: %s\n%s", exc, tb)
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": f"Internal Server Error: {str(exc)}",
+            "traceback": tb,
+            "message": str(exc),
+        }
+    )
+
+
 # ---------------------------------------------------------------------------
 # Startup / shutdown
 # ---------------------------------------------------------------------------
