@@ -79,6 +79,33 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup() -> None:
+    # Programmatic Alembic database migrations on startup for serverless/production
+    # Runs in a separate thread so Alembic's inner asyncio.run call does not conflict with the active loop
+    import os
+    if settings.environment == "production" or os.environ.get("VERCEL"):
+        logger.info("Orchestra environment is production or serverless. Running database migrations...")
+        
+        from alembic.config import Config
+        from alembic import command
+        from pathlib import Path
+        
+        def run_migrations():
+            try:
+                base_dir = Path(__file__).resolve().parent.parent
+                alembic_ini_path = base_dir / "alembic.ini"
+                script_location = base_dir / "alembic"
+                
+                alembic_cfg = Config(str(alembic_ini_path))
+                alembic_cfg.set_main_option("script_location", str(script_location))
+                alembic_cfg.set_main_option("sqlalchemy.url", settings.database_url)
+                
+                command.upgrade(alembic_cfg, "head")
+                logger.info("Database migrations applied successfully.")
+            except Exception as e:
+                logger.error("Failed to run database migrations: %s", e, exc_info=True)
+                
+        await asyncio.to_thread(run_migrations)
+
     # Start the Postgres LISTEN/NOTIFY gateway in the background
     pg_dsn = settings.database_url.replace("+asyncpg", "")
     asyncio.create_task(listen_postgres(pg_dsn))

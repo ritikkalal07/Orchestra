@@ -35,7 +35,30 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    s = Settings()
+    
+    # Check for Vercel/Neon database URL overrides
+    postgres_url = os.environ.get("POSTGRES_URL") or os.environ.get("DATABASE_URL")
+    if postgres_url:
+        # Normalize postgres:// to postgresql://
+        if postgres_url.startswith("postgres://"):
+            postgres_url = postgres_url.replace("postgres://", "postgresql://", 1)
+        # Ensure correct driver for asyncpg
+        if "postgresql+asyncpg://" not in postgres_url:
+            postgres_url = postgres_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        s.database_url = postgres_url
+
+    postgres_url_sync = os.environ.get("POSTGRES_URL_NON_POOLING") or os.environ.get("DATABASE_URL_SYNC")
+    if postgres_url_sync:
+        # Normalize postgres:// to postgresql://
+        if postgres_url_sync.startswith("postgres://"):
+            postgres_url_sync = postgres_url_sync.replace("postgres://", "postgresql://", 1)
+        # Ensure correct driver for psycopg2
+        if "postgresql+psycopg2://" not in postgres_url_sync:
+            postgres_url_sync = postgres_url_sync.replace("postgresql://", "postgresql+psycopg2://", 1)
+        s.database_url_sync = postgres_url_sync
+        
+    return s
 
 
 settings = get_settings()
