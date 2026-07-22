@@ -69,10 +69,11 @@ engine_kwargs: dict = {
     "pool_pre_ping": True,
 }
 
-# In Vercel / serverless environment, use NullPool or smaller pool size
+# In Vercel / serverless environment, use NullPool to avoid connection leaks/exhaustion
 if os.environ.get("VERCEL") or settings.environment == "production":
-    engine_kwargs["pool_size"] = 5
-    engine_kwargs["max_overflow"] = 10
+    engine_kwargs["poolclass"] = NullPool
+    if settings.database_url.startswith("postgresql+asyncpg"):
+        engine_kwargs["prepared_statement_cache_size"] = 0
 
 engine = create_async_engine(settings.database_url, **engine_kwargs)
 
