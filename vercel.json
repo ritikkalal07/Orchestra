@@ -41,7 +41,7 @@
   "crons": [
     {
       "path": "/v1/cron/tick",
-      "schedule": "* * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
