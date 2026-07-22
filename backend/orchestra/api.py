@@ -123,9 +123,10 @@ async def startup() -> None:
                 
         await asyncio.to_thread(run_migrations)
 
-    # Start the Postgres LISTEN/NOTIFY gateway in the background
-    pg_dsn = settings.database_url.replace("+asyncpg", "")
-    asyncio.create_task(listen_postgres(pg_dsn))
+    # Start the Postgres LISTEN/NOTIFY gateway in the background (only if not on Vercel)
+    if not os.environ.get("VERCEL"):
+        pg_dsn = settings.database_url.replace("+asyncpg", "")
+        asyncio.create_task(listen_postgres(pg_dsn))
     logger.info("Orchestra API started")
 
 

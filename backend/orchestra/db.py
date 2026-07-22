@@ -74,6 +74,10 @@ if os.environ.get("VERCEL") or settings.environment == "production":
     engine_kwargs["poolclass"] = NullPool
     if settings.database_url.startswith("postgresql+asyncpg"):
         engine_kwargs["prepared_statement_cache_size"] = 0
+        engine_kwargs["connect_args"] = {
+            "timeout": 5,
+            "command_timeout": 5
+        }
 
 engine = create_async_engine(settings.database_url, **engine_kwargs)
 

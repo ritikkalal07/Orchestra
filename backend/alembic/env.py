@@ -46,6 +46,10 @@ async def run_migrations_online() -> None:
     additional_args = {}
     if "postgresql+asyncpg" in url:
         additional_args["prepared_statement_cache_size"] = 0
+        additional_args["connect_args"] = {
+            "timeout": 5,
+            "command_timeout": 5
+        }
 
     connectable = async_engine_from_config(
         config.get_section(config.config_ini_section, {}),
