@@ -38,11 +38,6 @@
       "dest": "frontend/index.html"
     }
   ],
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "backend/**"
-    }
-  },
   "crons": [
     {
       "path": "/v1/cron/tick",
