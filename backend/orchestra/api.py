@@ -730,6 +730,80 @@ async def heatmap(user=Depends(require_viewer), db: AsyncSession = Depends(get_d
 
 
 # ---------------------------------------------------------------------------
+# Diagnostics / Debug
+# ---------------------------------------------------------------------------
+
+debug_router = APIRouter(prefix="/debug", tags=["debug"])
+
+
+@debug_router.get("/db")
+async def debug_db(db: AsyncSession = Depends(get_db)):
+    import os
+    try:
+        from sqlalchemy import text
+        # 1. Test query
+        result = await db.execute(text("SELECT 1"))
+        test_val = result.scalar()
+        
+        # 2. Check tables
+        result_tables = await db.execute(
+            text("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+        )
+        tables = [row[0] for row in result_tables.fetchall()]
+        
+        # 3. Mask database URL
+        from urllib.parse import urlparse
+        parsed = urlparse(settings.database_url)
+        masked_url = f"{parsed.scheme}://{parsed.username}:*****@{parsed.hostname}:{parsed.port}{parsed.path}"
+        
+        return {
+            "status": "success",
+            "test_query": test_val,
+            "database_url": masked_url,
+            "tables_in_public": tables,
+            "vercel_env": os.environ.get("VERCEL"),
+            "env_name": settings.environment
+        }
+    except Exception as exc:
+        import traceback
+        return {
+            "status": "error",
+            "error": str(exc),
+            "traceback": traceback.format_exc(),
+            "database_url": settings.database_url.split("@")[-1] if settings.database_url else None
+        }
+
+
+@debug_router.get("/db/migrate")
+async def debug_db_migrate():
+    from alembic.config import Config
+    from alembic import command
+    from pathlib import Path
+    
+    try:
+        base_dir = Path(__file__).resolve().parent.parent
+        alembic_ini_path = base_dir / "alembic.ini"
+        script_location = base_dir / "alembic"
+        
+        alembic_cfg = Config(str(alembic_ini_path))
+        alembic_cfg.set_main_option("script_location", str(script_location))
+        alembic_cfg.set_main_option("sqlalchemy.url", settings.database_url)
+        
+        command.upgrade(alembic_cfg, "head")
+        return {
+            "status": "success",
+            "message": "Database migrations completed successfully."
+        }
+    except Exception as exc:
+        import traceback
+        return {
+            "status": "error",
+            "error": str(exc),
+            "traceback": traceback.format_exc()
+        }
+
+
+# ---------------------------------------------------------------------------
 # Mount routers
 # ---------------------------------------------------------------------------
 
@@ -738,6 +812,7 @@ app.include_router(wf_router, prefix="/v1")
 app.include_router(runs_router, prefix="/v1")
 app.include_router(chaos_router, prefix="/v1")
 app.include_router(audit_router, prefix="/v1")
+app.include_router(debug_router, prefix="/v1")
 
 
 @app.get("/v1/cron/tick")
