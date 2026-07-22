@@ -5,15 +5,15 @@
   "outputDirectory": "frontend/dist",
   "rewrites": [
     {
-      "source": "/v1/(.*)",
-      "destination": "/api/index.py"
+      "source": "/v1/:path*",
+      "destination": "/api"
     },
     {
       "source": "/health",
-      "destination": "/api/index.py"
+      "destination": "/api"
     },
     {
-      "source": "/(.*)",
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ],
